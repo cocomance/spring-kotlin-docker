@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    # db가 준비될 때까지 딜레이 고려하여 3번 재시도
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+  db:
+    image: mariadb
+    platform: linux/amd64
+    environment:
+      # application.properties에서 참조
+      MYSQL_ROOT_PASSWORD: pswd1234
+      MARIADB_DATABASE: sample
+    ports:
+      - "3306:3306"
